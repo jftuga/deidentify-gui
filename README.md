@@ -1,5 +1,5 @@
 # deidentify-gui
-An easy to use GUI for the deidentify command-line program
+An easy to use GUI for the [deidentify](https://github.com/jftuga/deidentify) command-line program
 
 ## To Do List - C#
 * status textbox should update sooner than it does
