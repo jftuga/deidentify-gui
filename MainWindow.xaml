@@ -5,106 +5,98 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:deidentify_gui"
         mc:Ignorable="d"
-        Title="MainWindow" Height="735" Width="1430">
+        Title="Deidentify" Height="690" Width="1020">
 
-    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-        <Grid Name="CompInfoGrid" FocusManager.FocusedElement="{Binding ElementName=Button_Close}">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled">
+        <Grid Name="DeidentifyGrid" FocusManager.FocusedElement="{Binding ElementName=Button_Close}">
             <Grid.Resources>
-                <Style TargetType="Border" >
-                    <Setter Property="Padding" Value="5,5,5,5" />
+                <Style TargetType="RichTextBox">
+                    <Setter Property="Margin" Value="5,0,0,0" />
                 </Style>
-
-                <Style TargetType="Label">
-                    <Setter Property="HorizontalAlignment" Value="Right" />
-                    <Setter Property="Margin" Value="0,0,3,0" />
-                </Style>
-
                 <Style TargetType="TextBox">
-                    <Setter Property="TextWrapping" Value="NoWrap" />
-                    <Setter Property="Margin" Value="0,4,20,0" />
+                    <Setter Property="Margin" Value="5,0,0,0" />
                 </Style>
             </Grid.Resources>
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="40" />
-                <RowDefinition Height="25" />
-                <RowDefinition Height="310" />
-                <RowDefinition Height="25" />
-                <RowDefinition Height="310" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="260" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="260" />
                 <RowDefinition Height="25" />
 
             </Grid.RowDefinitions>
-            
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1390" />
-                <ColumnDefinition Width="40" />
-            </Grid.ColumnDefinitions>
-            
-            <!-- row_count:6  col_count:2-->
 
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="840" />
+                <ColumnDefinition Width="80" />
+            </Grid.ColumnDefinitions>
 
             <!-- row:0, col:*, desc: title -->
-            <Border Grid.ColumnSpan="6" Grid.Row="0">
-                <Label HorizontalAlignment="Center" Content="Deidentify"  FontSize="24" FontWeight="Bold"/>
-            </Border>
+            <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="24" FontWeight="Bold" Content="Deidentify"/>
 
+            <!-- row:1, col:0 -->
+            <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Top" Content="--- Original Text ---"/>
 
-            <!-- row:2, col:0 -->
-            <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Label.Target="{Binding ElementName=TextBox_User}" Content="Original Text"/>
-
-            <!-- row:3, col:*, desc -->
-            <RichTextBox Grid.Row="3" Grid.Column="0"  Name="RichTextBox_Original" HorizontalAlignment="Left" VerticalAlignment="Top" Width="1390" Height="3100" SpellCheck.IsEnabled="True">
+            <!-- row:2, col:0  -->
+            <RichTextBox Grid.Row="2" Grid.Column="0"  Name="RichTextBox_Original" HorizontalAlignment="Left" VerticalAlignment="Top" Width="835" Height="255" SpellCheck.IsEnabled="True">
                 <FlowDocument>
-                    <Paragraph>In tennis, Naomi Osaka wins the women's singles and Novak Djokovic wins the men's singles at the Australian Open (both winners pictured). Naomi Osaka defeated Jennifer Brady in the final, 6–4, 6–3 to win the Women's Singles tennis title at the 2021 Australian Open. This was Osaka's second Australian Open title and her fourth Grand Slam tournament singles title. At this event Osaka extended her winning streak, dating back to the 2020 Cincinnati Open, to 21 matches. Osaka dropped just one set the entire tournament, to Garbiñe Muguruza in the fourth round; Osaka also saved two match points in this fourth round match against Muguruza. Osaka became the first female player to win four Grand Slam singles titles since Maria Sharapova in 2012, and the youngest since Justine Henin won the 2005 French Open. Osaka became the third player in the Open Era, after Monica Seles and Roger Federer, to win their first four Grand Slam finals. Sofia Kenin was the defending champion, but she lost to Kaia Kanepi in the second round. Her loss to Kanepi was the earliest by a women's defending champion at the Australian Open since two-time defending champion Jennifer Capriati lost in the opening round in 2003. Mayar Sherif became the first Egyptian woman to win a match in a Grand Slam tournament main draw. Serena Williams equalled Chris Evert's all-time record of reaching 54 Grand Slam quarterfinals. Hsieh Su-wei became the first female Taiwanese player to make a Grand Slam singles quarterfinal. At 35 years old, she is also the oldest player to debut in a Grand Slam quarterfinal.</Paragraph>
+                    <Paragraph>Original Text</Paragraph>
                 </FlowDocument>
             </RichTextBox>
 
             <!-- row:3, col:0 -->
-            <Label Grid.Row="3" Grid.Column="0" Label.Target="{Binding ElementName=TextBox_User}" Content="Deidentified Text"/>
+            <Label Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top" Content="--- Deidentified Text ---"/>
 
             <!-- row:4, col:1 -->
-            <RichTextBox Grid.Row="4" Grid.Column="1"  Name="RichTextBox_Deidentified" HorizontalAlignment="Left" VerticalAlignment="Top" Width="1390" Height="310" SpellCheck.IsEnabled="True">
+            <RichTextBox Grid.Row="4" Grid.Column="0"  Name="RichTextBox_Deidentified" HorizontalAlignment="Left" VerticalAlignment="Top" Width="835" Height="250" SpellCheck.IsEnabled="True">
                 <FlowDocument>
-                    <Paragraph>Deidentified</Paragraph>
-                    <Paragraph Background="Turquoise">I am blue I am blue I am
-                        <Bold>BOLD</Bold> .
-                    </Paragraph>
+                    <Paragraph>Deidentified Text</Paragraph>
                 </FlowDocument>
             </RichTextBox>
-            
 
-            
+            <!-- row:2, col:1 -->
+            <Grid Grid.Row="2" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Button Grid.Row="0" Grid.Column="0" x:Name="Button_OpenFile" Content="Open File" Click="Click_OpenFile" Height="30" Margin="0,11,-50,11"   />
+                <Label  Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Content="replacement:" FontSize="12" Width="90" Margin="0,0,0,26" />
+                <TextBox Grid.Row="1" Grid.Column="0" x:Name="TextBox_Replacement" Height="20" Text="PERSON" Margin="5,22,-50,10" />
+                <Button Grid.Row="1" Grid.Column="0" x:Name="Button_Deidentify" Content="Deidentify" Click="Click_Deidentify" Height="30" Margin="0,47,-50,27" Grid.RowSpan="2"  />
+                <Button Grid.Row="2" Grid.Column="0" x:Name="Button_Clear" Content="Clear" Click="Click_Clear" Height="30" Margin="0,32,-50,42" Grid.RowSpan="2"  />
+            </Grid>
 
+            <!-- row:4 col:1 -->
+            <Grid Grid.Row="4" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Button Grid.Row="0" Grid.Column="0" x:Name="Button_Copy" Content="Copy" Click="Click_Copy" Height="30" />
+                <Button Grid.Column="0" x:Name="Button_Save" Content="Save" Click="Click_Close" Height="30" Margin="0,46,0,28" Grid.RowSpan="2" />
+                <Button Grid.Row="2" Grid.Column="0" x:Name="Button_Debug" Content="Debug" Click="Click_Debug" Height="30" Margin="0,45,0,29" Grid.RowSpan="2" />
+                <Button Grid.Row="3" Grid.Column="0" x:Name="Button_About" Content="About" Click="Click_About" Height="30" Margin="0,28,0,46" Grid.RowSpan="2" />
+                <Button Grid.Row="4" Grid.Column="0" x:Name="Button_Quit" Content="Quit" Click="Click_Close" Height="30" />
+            </Grid>
 
-            <!-- <Label Label.Target="{Binding ElementName=TextBox_User}" Grid.Column="2" Grid.Row="1" Content="Original"/> -->
-            <!-- TextBlock Grid.Column="1" Grid.Row="1" x:Name="TextBox_Original" Text="{Binding textOriginal}" Grid.RowSpan="3" /> -->
- 
-<!--
-            <Label Target="{Binding ElementName=TextBox_Deidentified}" Grid.Column="0" Grid.Row="2" Content="Deidentified" />
-            <RichTextBox Grid.Column="1" Grid.Row="2" Margin="10,10,0,13" Name="RichTextBox2" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Height="120" SpellCheck.IsEnabled="True">
-                <FlowDocument>
-                    <Paragraph>Deidentified</Paragraph><Paragraph Background="Turquoise">I am blue I am blue I am <Bold>BOLD</Bold>.</Paragraph>
-                </FlowDocument>
-            </RichTextBox>
--->
-            <!--
-            <Label Label.Target="{Binding ElementName=TextBox_OS}"  Grid.Column="0" Grid.Row="3"  />
-            <TextBox Grid.Column="1" Grid.Row="3" x:Name="TextBox_OS" Text="{Binding Path=OS, Mode=OneWay }" />
+            <!-- row:5 col:0 -->
+            <TextBox Grid.Row="5" Grid.Column="0" x:Name="TextBox_Status" Text="" Margin="5,0,0,0" />
 
-            <Label Label.Target="{Binding ElementName=TextBox_InstallDate}"  Grid.Column="0" Grid.Row="4"  />
-            <TextBox Grid.Column="1" Grid.Row="4" x:Name="TextBox_InstallDate" Text="{Binding Path=InstallDate, Mode=OneWay }" />
-
-            <Label Label.Target="{Binding ElementName=TextBox_Model}"  Grid.Column="0" Grid.Row="5"  />
-            <TextBox Grid.Column="1" Grid.Row="5" x:Name="TextBox_Model" Text="{Binding Path=Model, Mode=OneWay, IsAsync=true}" />
-
-            <Label Label.Target="{Binding ElementName=TextBox_Serial}"  Grid.Column="0" Grid.Row="6"  />
-            <TextBox Grid.Column="1" Grid.Row="6" x:Name="TextBox_Serial" Text="{Binding Path=Serial, Mode=OneWay}" />
--->
-
-
-           <!-- <Button  Grid.Row="11" Grid.Column="7" x:Name="Button_Close" Content="Quit"  HorizontalAlignment="Right" Click="Click_Close" Margin="20,4,20,0" /> -->
         </Grid>
     </ScrollViewer>
-
-
 </Window>
