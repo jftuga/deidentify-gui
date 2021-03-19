@@ -25,13 +25,23 @@ namespace deidentify_gui
     /// </summary>
     public partial class MainWindow : Window
     {
+        private string inputFile;
         private string jsonFile;
         private string outputFile;
+        private bool usingDefaultFilenames;
         public MainWindow()
         {
             InitializeComponent();
-            jsonFile = "";
-            outputFile = "";
+            resetDefaults();
+
+        }
+
+        private void resetDefaults()
+        {
+            this.inputFile = "default--input.txt";
+            this.jsonFile = "default--tokens.json";
+            this.outputFile = "default--output.txt";
+            this.usingDefaultFilenames = true;
         }
 
         private void Click_Close(object sender, RoutedEventArgs e)
@@ -39,21 +49,18 @@ namespace deidentify_gui
             Close();
         }
 
-        public string textOriginal
+        public string Status
         {
             get
             {
                 return "";
+            }
+            set
+            {
+
             }
         }
 
-        public string textDeidentified
-        {
-            get
-            {
-                return "";
-            }
-        }
 
         string StringFromRichTextBox(RichTextBox rtb)
         {
@@ -69,19 +76,36 @@ namespace deidentify_gui
             return textRange.Text;
         }
 
+        private void SetAllFilename()
+        {
+            if (this.usingDefaultFilenames == false)
+            {
+                int i = this.inputFile.LastIndexOf(".");
+                string fileNameWithoutExtension = this.inputFile;
+                if ( i > 0 )
+                {
+                    fileNameWithoutExtension = this.inputFile.Substring(0, i);
+                }
+                string path = fileNameWithoutExtension;
+                this.jsonFile = path + "--tokens.json";
+                this.outputFile = path + "--deidentified" + Path.GetExtension(this.inputFile);
+                Console.WriteLine("{0} {1} {2}", this.inputFile, this.jsonFile, this.outputFile);
+                Console.WriteLine();
+            }
+        }
+
         private void Click_Deidentify(object sender, RoutedEventArgs e)
         {
-            TextBox_Status.Text = "Starting deidentification...";
-            jsonFile = @"r:\temp\test.txt";
-            File.WriteAllText(jsonFile, StringFromRichTextBox(RichTextBox_Original));
+            Status= "Starting deidentification.";
+            //File.WriteAllText(this.jsonFile, StringFromRichTextBox(RichTextBox_Original));
             File_Deidentify();
         }
 
         private void File_Deidentify()
         {
             string filename = @"C:\github.com\jftuga\deidentify\activate.bat";
-            outputFile = @"r:\temp\output.txt";
-            string args = string.Format("-r {0} -o {1} {2}", TextBox_Replacement.Text, outputFile, jsonFile);
+            //outputFile = @"r:\temp\output.txt";
+            string args = string.Format("-r {0} -o {1} {2}", TextBox_Replacement.Text, this.outputFile, this.inputFile);
             Console.WriteLine(args);
             var proc = new Process
             {
@@ -100,11 +124,21 @@ namespace deidentify_gui
             proc.Start();
             while (!proc.StandardError.EndOfStream)
             {
-                string line = proc.StandardError.ReadLine();
-                TextBox_Status.Text = line;
+                //string line = proc.StandardError.ReadLine();
+                //TextBox_Status.Text = line;
+                Status = proc.StandardError.ReadLine();
             }
-            string readText = File.ReadAllText(outputFile);
-            RichTextBox_Deidentified.Document.Blocks.Add(new Paragraph(new Run(readText)));
+
+            proc.StandardError.ReadLine();
+            if (!this.usingDefaultFilenames)
+            {
+                string readText = File.ReadAllText(this.outputFile);
+                RichTextBox_Deidentified.Document.Blocks.Add(new Paragraph(new Run(readText)));
+            } else
+            {
+                string readText = StringFromRichTextBox(RichTextBox_Original);
+                RichTextBox_Deidentified.Document.Blocks.Add(new Paragraph(new Run(readText)));
+            }
         }
 
 
@@ -115,8 +149,11 @@ namespace deidentify_gui
             if (openFileDialog.ShowDialog() == true)
             {
                 RichTextBox_Original.Document.Blocks.Clear();
-                readText = File.ReadAllText(openFileDialog.FileName);
+                this.inputFile = openFileDialog.FileName;
+                readText = File.ReadAllText(this.inputFile);
                 RichTextBox_Original.Document.Blocks.Add(new Paragraph(new Run(readText)));
+                this.usingDefaultFilenames = false;
+                SetAllFilename();
             }
         }
 
@@ -136,10 +173,6 @@ namespace deidentify_gui
                 using (RegistryKey kp =
                        Registry.ClassesRoot.OpenSubKey(progId + @"\shell\open\command", false))
                 {
-                    // Get default value and convert to EXE path.
-                    // It's stored as:
-                    //    "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" -- "%1"
-                    // So we want the first quoted string only
                     string rawValue = (string)kp.GetValue("");
                     Regex reg = new Regex("(?<=\").*?(?=\")");
                     Match m = reg.Match(rawValue);
@@ -151,8 +184,7 @@ namespace deidentify_gui
         private void Click_Debug(object sender, RoutedEventArgs e)
         {
             string browserPath = GetPathToDefaultBrowser();
-            string converted = @"R:\Temp\test--tokens.json";
-            Process.Start(browserPath, converted);
+            Process.Start(browserPath, this.jsonFile);
         }
 
         private void Click_Clear(object sender, RoutedEventArgs e)
@@ -160,6 +192,7 @@ namespace deidentify_gui
             RichTextBox_Original.Document.Blocks.Clear();
             RichTextBox_Deidentified.Document.Blocks.Clear();
             TextBox_Status.Text = "";
+            resetDefaults();
         }
 
         private void Click_Copy(object sender, RoutedEventArgs e)

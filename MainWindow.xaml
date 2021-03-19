@@ -95,7 +95,7 @@
             </Grid>
 
             <!-- row:5 col:0 -->
-            <TextBox Grid.Row="5" Grid.Column="0" x:Name="TextBox_Status" Text="" Margin="5,0,0,0" />
+            <TextBox Grid.Row="5" Grid.Column="0" x:Name="TextBox_Status" Text="{Binding Path=Status, Mode=OneWay}" Margin="5,0,0,0" />
 
         </Grid>
     </ScrollViewer>
