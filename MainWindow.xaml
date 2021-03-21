@@ -93,7 +93,7 @@
 
             <!-- row:5 col:0 -->
             <!-- <TextBox Grid.Row="5" Grid.Column="0" x:Name="TextBox_Status" Text="{Binding Path=Status, Mode=TwoWay, IsAsync=True, UpdateSourceTrigger=PropertyChanged}" Margin="5,0,0,0" /> -->
-            <WebBrowser x:Name="statusBrowser" Grid.Row="5" Grid.Column="0" Margin="5,0,0,0" Cursor="Arrow" />
+            <Label x:Name="Label_Status" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Status: "/>
             
 
         </Grid>
