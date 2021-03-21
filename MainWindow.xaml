@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:deidentify_gui"
         mc:Ignorable="d"
-        Title="Deidentify" Height="690" Width="1020">
+        Title="Deidentify" Height="720" Width="1020"> <!-- h:690 -->
 
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled">
         <Grid Name="DeidentifyGrid" FocusManager.FocusedElement="{Binding ElementName=Button_Close}">
@@ -40,7 +40,7 @@
             <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Top" Content="--- Original Text ---"/>
 
             <!-- row:2, col:0  -->
-            <RichTextBox Grid.Row="2" Grid.Column="0"  Name="RichTextBox_Original" HorizontalAlignment="Left" VerticalAlignment="Top" Width="835" Height="255" SpellCheck.IsEnabled="True">
+            <RichTextBox Grid.Row="2" Grid.Column="0"  Name="RichTextBox_Original" HorizontalAlignment="Left" VerticalAlignment="Top" Width="835" Height="255" SpellCheck.IsEnabled="True" PreviewMouseUp="Click_Into_Original">
                 <FlowDocument>
                     <Paragraph>Original Text</Paragraph>
                 </FlowDocument>
@@ -50,11 +50,8 @@
             <Label Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top" Content="--- Deidentified Text ---"/>
 
             <!-- row:4, col:1 -->
-            <RichTextBox Grid.Row="4" Grid.Column="0"  Name="RichTextBox_Deidentified" HorizontalAlignment="Left" VerticalAlignment="Top" Width="835" Height="250" SpellCheck.IsEnabled="True">
-                <FlowDocument>
-                    <Paragraph>Deidentified Text</Paragraph>
-                </FlowDocument>
-            </RichTextBox>
+
+            <WebBrowser x:Name="myBrowser" Grid.Row="4" Grid.Column="0" Margin="0,0,0,0" Cursor="Arrow" HorizontalAlignment="Left" VerticalAlignment="Top" Width="835" Height="250" />
 
             <!-- row:2, col:1 -->
             <Grid Grid.Row="2" Grid.Column="1">
@@ -95,7 +92,9 @@
             </Grid>
 
             <!-- row:5 col:0 -->
-            <TextBox Grid.Row="5" Grid.Column="0" x:Name="TextBox_Status" Text="{Binding Path=Status, Mode=OneWay}" Margin="5,0,0,0" />
+            <!-- <TextBox Grid.Row="5" Grid.Column="0" x:Name="TextBox_Status" Text="{Binding Path=Status, Mode=TwoWay, IsAsync=True, UpdateSourceTrigger=PropertyChanged}" Margin="5,0,0,0" /> -->
+            <WebBrowser x:Name="statusBrowser" Grid.Row="5" Grid.Column="0" Margin="5,0,0,0" Cursor="Arrow" />
+            
 
         </Grid>
     </ScrollViewer>

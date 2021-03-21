@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using HtmlAgilityPack;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -35,20 +36,6 @@ namespace deidentify_gui
             resetDefaults();
 
         }
-
-        private void resetDefaults()
-        {
-            this.inputFile = "default--input.txt";
-            this.jsonFile = "default--tokens.json";
-            this.outputFile = "default--output.txt";
-            this.usingDefaultFilenames = true;
-        }
-
-        private void Click_Close(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
         public string Status
         {
             get
@@ -61,6 +48,21 @@ namespace deidentify_gui
             }
         }
 
+        private void resetDefaults()
+        {
+            string temp = (Environment.GetEnvironmentVariable("TEMP").Length > 0) ? Environment.GetEnvironmentVariable("TEMP") : (Environment.GetEnvironmentVariable("TMP").Length > 0) ? Environment.GetEnvironmentVariable("TMP") : ".";
+            temp += Path.DirectorySeparatorChar;
+            this.inputFile = temp + "default--input.txt";
+            this.jsonFile = temp + "default--tokens.json";
+            this.outputFile = temp + "default--output.htm";
+            this.jsonFile = temp;
+            this.usingDefaultFilenames = true;
+        }
+
+        private void Click_Close(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
 
         string StringFromRichTextBox(RichTextBox rtb)
         {
@@ -78,26 +80,34 @@ namespace deidentify_gui
 
         private void SetAllFilename()
         {
+            string fileNameWithoutExtension = this.inputFile;
+
             if (this.usingDefaultFilenames == false)
             {
                 int i = this.inputFile.LastIndexOf(".");
-                string fileNameWithoutExtension = this.inputFile;
+                
                 if ( i > 0 )
                 {
                     fileNameWithoutExtension = this.inputFile.Substring(0, i);
                 }
-                string path = fileNameWithoutExtension;
-                this.jsonFile = path + "--tokens.json";
-                this.outputFile = path + "--deidentified" + Path.GetExtension(this.inputFile);
+                //string path = fileNameWithoutExtension;
+                this.jsonFile = fileNameWithoutExtension + "--tokens.json";
+                this.outputFile = fileNameWithoutExtension + "--deidentified" + ".htm";
                 Console.WriteLine("{0} {1} {2}", this.inputFile, this.jsonFile, this.outputFile);
                 Console.WriteLine();
+            } else
+            {
+                //this.jsonFile += fileNameWithoutExtension + "--tokens.json";
             }
         }
 
         private void Click_Deidentify(object sender, RoutedEventArgs e)
         {
             Status= "Starting deidentification.";
-            //File.WriteAllText(this.jsonFile, StringFromRichTextBox(RichTextBox_Original));
+            //TextBox_Status.Text = Status;
+            if( usingDefaultFilenames ) {
+                File.WriteAllText(this.inputFile, StringFromRichTextBox(RichTextBox_Original));
+            }
             File_Deidentify();
         }
 
@@ -120,16 +130,30 @@ namespace deidentify_gui
                 }
             };
 
-            RichTextBox_Deidentified.Document.Blocks.Clear();
+            // clear the browser
+            statusBrowser.Navigate(@"about:blank");
+            var doc = new HtmlDocument();
+            
             proc.Start();
+            string line = "";
             while (!proc.StandardError.EndOfStream)
             {
                 //string line = proc.StandardError.ReadLine();
                 //TextBox_Status.Text = line;
-                Status = proc.StandardError.ReadLine();
+                line = proc.StandardError.ReadLine();
+                doc.LoadHtml(line);
+                //Console.WriteLine(line);
+                //browser
+                //TextBox_Status.Text += line;
             }
 
             proc.StandardError.ReadLine();
+            // string readText = File.ReadAllText(this.outputFile);
+            // add readText to browser
+            myBrowser.Navigate(this.outputFile);
+
+
+            /*
             if (!this.usingDefaultFilenames)
             {
                 string readText = File.ReadAllText(this.outputFile);
@@ -137,8 +161,8 @@ namespace deidentify_gui
             } else
             {
                 string readText = StringFromRichTextBox(RichTextBox_Original);
-                RichTextBox_Deidentified.Document.Blocks.Add(new Paragraph(new Run(readText)));
-            }
+                RichTextBox_Deidentified.Document.Blocks.Add(new Paragraph(new Run(readText))); //FIXME: this goes before proc.start(); first need to save text to default outputFile
+            }*/
         }
 
 
@@ -183,6 +207,8 @@ namespace deidentify_gui
 
         private void Click_Debug(object sender, RoutedEventArgs e)
         {
+            //string j = (usingDefaultFilenames) ? "default--tokens.json" : this.jsonFile;
+
             string browserPath = GetPathToDefaultBrowser();
             Process.Start(browserPath, this.jsonFile);
         }
@@ -190,15 +216,35 @@ namespace deidentify_gui
         private void Click_Clear(object sender, RoutedEventArgs e)
         {
             RichTextBox_Original.Document.Blocks.Clear();
-            RichTextBox_Deidentified.Document.Blocks.Clear();
-            TextBox_Status.Text = "";
+            // clear browser
+            //RichTextBox_Deidentified.Document.Blocks.Clear();
+            myBrowser.Navigate(@"about:blank");
+            statusBrowser.Navigate(@"about:blank");
             resetDefaults();
         }
 
         private void Click_Copy(object sender, RoutedEventArgs e)
         {
-            RichTextBox_Deidentified.SelectAll();
-            RichTextBox_Deidentified.Copy();
+
+            var htmlDoc = new HtmlDocument();
+            htmlDoc.Load(this.outputFile);
+            var htmlNodes = htmlDoc.DocumentNode.SelectNodes("//body");
+            foreach (var node in htmlNodes)
+            {
+                Console.WriteLine(node.InnerHtml);
+                Clipboard.SetDataObject(new DataObject(DataFormats.Text, node.InnerText), true);
+                break;
+            }
+
+        }
+
+        private void Click_Into_Original(object sender, MouseButtonEventArgs e)
+        {
+            string o = StringFromRichTextBox(RichTextBox_Original);
+            if ( o.StartsWith("Original Text") )
+            {
+                RichTextBox_Original.Document.Blocks.Clear();
+            }
         }
     }
 }
