@@ -205,5 +205,10 @@ namespace deidentify_gui
                 RichTextBox_Original.Document.Blocks.Clear();
             }
         }
+
+        private void Click_Save(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("The SAVE function has not been implemented yet." + "\n" + "Instead, use COPY to copy the deidentifed text to the clipboard.", "Deidentify");
+        }
     }
 }

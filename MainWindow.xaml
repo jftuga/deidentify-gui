@@ -25,7 +25,6 @@
                 <RowDefinition Height="30" />
                 <RowDefinition Height="260" />
                 <RowDefinition Height="25" />
-
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -50,7 +49,6 @@
             <Label Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top" Content="--- Deidentified Text ---"/>
 
             <!-- row:4, col:1 -->
-
             <WebBrowser x:Name="myBrowser" Grid.Row="4" Grid.Column="0" Margin="0,0,0,0" Cursor="Arrow" HorizontalAlignment="Left" VerticalAlignment="Top" Width="835" Height="250" />
 
             <!-- row:2, col:1 -->
@@ -85,7 +83,7 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <Button Grid.Row="0" Grid.Column="0" x:Name="Button_Copy" Content="Copy" Click="Click_Copy" Height="30" />
-                <Button Grid.Column="0" x:Name="Button_Save" Content="Save" Click="Click_Close" Height="30" Margin="0,46,0,28" Grid.RowSpan="2" />
+                <Button Grid.Column="0" x:Name="Button_Save" Content="Save" Click="Click_Save" Height="30" Margin="0,46,0,28" Grid.RowSpan="2" />
                 <Button Grid.Row="2" Grid.Column="0" x:Name="Button_Debug" Content="Debug" Click="Click_Debug" Height="30" Margin="0,45,0,29" Grid.RowSpan="2" />
                 <Button Grid.Row="3" Grid.Column="0" x:Name="Button_About" Content="About" Click="Click_About" Height="30" Margin="0,28,0,46" Grid.RowSpan="2" />
                 <Button Grid.Row="4" Grid.Column="0" x:Name="Button_Quit" Content="Quit" Click="Click_Close" Height="30" />
@@ -94,8 +92,6 @@
             <!-- row:5 col:0 -->
             <!-- <TextBox Grid.Row="5" Grid.Column="0" x:Name="TextBox_Status" Text="{Binding Path=Status, Mode=TwoWay, IsAsync=True, UpdateSourceTrigger=PropertyChanged}" Margin="5,0,0,0" /> -->
             <Label x:Name="Label_Status" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Status: "/>
-            
-
         </Grid>
     </ScrollViewer>
 </Window>
