@@ -36,17 +36,6 @@ namespace deidentify_gui
             resetDefaults();
 
         }
-        public string Status
-        {
-            get
-            {
-                return "";
-            }
-            set
-            {
-
-            }
-        }
 
         private void resetDefaults()
         {
@@ -67,14 +56,10 @@ namespace deidentify_gui
         string StringFromRichTextBox(RichTextBox rtb)
         {
             TextRange textRange = new TextRange(
-                // TextPointer to the start of content in the RichTextBox.
                 rtb.Document.ContentStart,
-                // TextPointer to the end of content in the RichTextBox.
                 rtb.Document.ContentEnd
             );
 
-            // The Text property on a TextRange object returns a string
-            // representing the plain text content of the TextRange.
             return textRange.Text;
         }
 
@@ -90,22 +75,17 @@ namespace deidentify_gui
                 {
                     fileNameWithoutExtension = this.inputFile.Substring(0, i);
                 }
-                //string path = fileNameWithoutExtension;
                 this.jsonFile = fileNameWithoutExtension + "--tokens.json";
                 this.outputFile = fileNameWithoutExtension + "--deidentified" + ".htm";
                 Console.WriteLine("{0} {1} {2}", this.inputFile, this.jsonFile, this.outputFile);
                 Console.WriteLine();
-            } else
-            {
-                //this.jsonFile += fileNameWithoutExtension + "--tokens.json";
             }
         }
 
         private void Click_Deidentify(object sender, RoutedEventArgs e)
         {
-            Status= "Starting deidentification.";
-            //TextBox_Status.Text = Status;
-            if( usingDefaultFilenames ) {
+            Label_Status.Content = "Status: Starting deidentification...";
+            if ( usingDefaultFilenames ) {
                 File.WriteAllText(this.inputFile, StringFromRichTextBox(RichTextBox_Original));
             }
             File_Deidentify();
@@ -113,9 +93,9 @@ namespace deidentify_gui
 
         private void File_Deidentify()
         {
-            string filename = @"C:\github.com\jftuga\deidentify\activate.bat";
-            //outputFile = @"r:\temp\output.txt";
-            string args = string.Format("-r {0} -o {1} {2}", TextBox_Replacement.Text, this.outputFile, this.inputFile);
+            // FIXME - When entering text (and not using Open), this button must be pressed twice
+            string filename = @"C:\github.com\jftuga\deidentify\activate.bat"; //FIXME - don't hard code path
+            string args = string.Format("-H -r {0} -o {1} {2}", TextBox_Replacement.Text, this.outputFile, this.inputFile);
             Console.WriteLine(args);
             var proc = new Process
             {
@@ -130,39 +110,17 @@ namespace deidentify_gui
                 }
             };
 
-            // clear the browser
-            statusBrowser.Navigate(@"about:blank");
-            var doc = new HtmlDocument();
-            
+            Label_Status.Content = "Status:";
             proc.Start();
             string line = "";
             while (!proc.StandardError.EndOfStream)
             {
-                //string line = proc.StandardError.ReadLine();
-                //TextBox_Status.Text = line;
                 line = proc.StandardError.ReadLine();
-                doc.LoadHtml(line);
-                //Console.WriteLine(line);
-                //browser
-                //TextBox_Status.Text += line;
+                Label_Status.Content = "Status: " + line;
             }
 
             proc.StandardError.ReadLine();
-            // string readText = File.ReadAllText(this.outputFile);
-            // add readText to browser
             myBrowser.Navigate(this.outputFile);
-
-
-            /*
-            if (!this.usingDefaultFilenames)
-            {
-                string readText = File.ReadAllText(this.outputFile);
-                RichTextBox_Deidentified.Document.Blocks.Add(new Paragraph(new Run(readText)));
-            } else
-            {
-                string readText = StringFromRichTextBox(RichTextBox_Original);
-                RichTextBox_Deidentified.Document.Blocks.Add(new Paragraph(new Run(readText))); //FIXME: this goes before proc.start(); first need to save text to default outputFile
-            }*/
         }
 
 
@@ -183,6 +141,7 @@ namespace deidentify_gui
 
         private void Click_About(object sender, RoutedEventArgs e)
         {
+            //FIXME - don't hard code version number
             MessageBox.Show("Deidentify GUI" + "\n" + "version 1.0.0" + "\n\n" + "https://github.com/jftuga/deidentify-gui" + "\n" + "https://github.com/jftuga/deidentify", "Deidentify");
         }
 
@@ -207,19 +166,17 @@ namespace deidentify_gui
 
         private void Click_Debug(object sender, RoutedEventArgs e)
         {
-            //string j = (usingDefaultFilenames) ? "default--tokens.json" : this.jsonFile;
+            string j = (usingDefaultFilenames) ? this.jsonFile + "default--input--tokens.json" : this.jsonFile;
 
             string browserPath = GetPathToDefaultBrowser();
-            Process.Start(browserPath, this.jsonFile);
+            Process.Start(browserPath, j);
         }
 
         private void Click_Clear(object sender, RoutedEventArgs e)
         {
             RichTextBox_Original.Document.Blocks.Clear();
-            // clear browser
-            //RichTextBox_Deidentified.Document.Blocks.Clear();
             myBrowser.Navigate(@"about:blank");
-            statusBrowser.Navigate(@"about:blank");
+            Label_Status.Content = "Status:";
             resetDefaults();
         }
 
@@ -229,6 +186,8 @@ namespace deidentify_gui
             var htmlDoc = new HtmlDocument();
             htmlDoc.Load(this.outputFile);
             var htmlNodes = htmlDoc.DocumentNode.SelectNodes("//body");
+
+            //FIXME - don't break after one iteration
             foreach (var node in htmlNodes)
             {
                 Console.WriteLine(node.InnerHtml);
