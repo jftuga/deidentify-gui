@@ -32,19 +32,20 @@ namespace deidentify_gui
         private string jsonFile;
         private string outputFile;
         private bool usingDefaultFilenames;
+        private string tempDir;
         public MainWindow()
         {
             InitializeComponent();
             ResetDefaults();
-
+            Auxiliary.DeleteTempFiles(this.tempDir);
         }
 
         private void ResetDefaults()
         {
             string temp = (Environment.GetEnvironmentVariable("TEMP").Length > 0) ? Environment.GetEnvironmentVariable("TEMP") : (Environment.GetEnvironmentVariable("TMP").Length > 0) ? Environment.GetEnvironmentVariable("TMP") : ".";
             temp += Path.DirectorySeparatorChar;
+            this.tempDir = temp;
             this.inputFile = temp + "default--input.txt";
-            this.jsonFile = temp + "default--tokens.json";
             this.outputFile = temp + "default--output.htm";
             this.jsonFile = temp;
             this.usingDefaultFilenames = true;
@@ -69,18 +70,21 @@ namespace deidentify_gui
 
         private void Click_Close(object sender, RoutedEventArgs e)
         {
+            Auxiliary.DeleteTempFiles(this.tempDir);
             Close();
         }
 
         private void Click_Deidentify(object sender, RoutedEventArgs e)
         {
             Label_Status.Content = "Status: Starting deidentification...";
-            if ( usingDefaultFilenames ) {
-                File.WriteAllText(this.inputFile, Auxiliary.StringFromRichTextBox(RichTextBox_Original));
-            }
+
             try
             {
-                Auxiliary.FileDeidentify(TextBox_Replacement.Text, this.outputFile, this.inputFile, Label_Status);
+                string tempFile = Path.GetTempFileName();
+                File.WriteAllText(tempFile, Auxiliary.StringFromRichTextBox(RichTextBox_Original));
+                Auxiliary.FileDeidentify(TextBox_Replacement.Text, this.outputFile, tempFile, Label_Status);
+                File.Delete(tempFile);
+                this.jsonFile = Auxiliary.SetJSONFilename(tempFile);
                 myBrowser.Navigate(this.outputFile);
             } catch( Exception ex)
             {
@@ -112,9 +116,8 @@ namespace deidentify_gui
 
         private void Click_Debug(object sender, RoutedEventArgs e)
         {
-            string j = (usingDefaultFilenames) ? this.jsonFile + "default--input--tokens.json" : this.jsonFile;
             string browserPath = Auxiliary.GetPathToDefaultBrowser();
-            Process.Start(browserPath, j);
+            Process.Start(browserPath, this.jsonFile);
         }
 
         private void Click_Clear(object sender, RoutedEventArgs e)

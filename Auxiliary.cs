@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 
@@ -66,6 +68,41 @@ namespace deidentify_gui
             {
                 line = proc.StandardError.ReadLine();
                 label.Content = "Status: " + line;
+            }
+        }
+        public static string SetJSONFilename(string someFile)
+        {
+            string fileNameWithoutExtension = someFile;
+            int i = someFile.LastIndexOf(".");
+
+            if (i > 0)
+            {
+                fileNameWithoutExtension = someFile.Substring(0, i);
+            }
+            string jsonFile = fileNameWithoutExtension + "--tokens.json";
+            return jsonFile;
+        }
+
+        public static void DeleteTempFiles(string tempDir)
+        {
+            var allFiles = Directory.GetFiles(tempDir);
+            foreach( string fname in allFiles)
+            {
+                var basename = Path.GetFileName(fname);
+                if (basename.StartsWith("default--input"))
+                {
+                    File.Delete(fname);
+                    continue;
+                }
+                if (basename.StartsWith("default--output")) {
+                    File.Delete(fname);
+                    continue;
+                }
+                if (basename.EndsWith("--tokens.json"))
+                {
+                    File.Delete(fname);
+                    continue;
+                }
             }
         }
     }
