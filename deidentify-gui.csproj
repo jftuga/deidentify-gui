@@ -5,10 +5,13 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>deidentify_gui</RootNamespace>
     <UseWPF>true</UseWPF>
+    <PackageProjectUrl>https://github.com/jftuga/deidentify-gui</PackageProjectUrl>
+    <Copyright>Copyright 2021 John Taylor</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.11.31" />
+    <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
   </ItemGroup>
 
 </Project>
