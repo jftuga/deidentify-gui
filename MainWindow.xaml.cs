@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -74,9 +75,30 @@ namespace deidentify_gui
             Close();
         }
 
+        // update status begin
+        // https://stackoverflow.com/a/10715059/452281
+        public delegate void UpdateTextCallback(string message);
+
+        private void UpdateStatus(string message)
+        {
+            Label_Status.Content = message;
+        }
+
+        private void UpdateThread()
+        {
+            string message = "Status: Starting deidentification...";
+            this.Dispatcher.Invoke(
+                new UpdateTextCallback(this.UpdateStatus),
+                new object[] { message.ToString() }
+            );
+        }
+        // update status end
+
         private void Click_Deidentify(object sender, RoutedEventArgs e)
         {
-            Label_Status.Content = "Status: Starting deidentification...";
+            // status is not working, can someone please help me fix this?
+            //Thread updaterTh = new Thread(new ThreadStart(UpdateThread));
+            //updaterTh.Start();
 
             try
             {
@@ -158,7 +180,6 @@ namespace deidentify_gui
         private void Window_Closing(object sender, EventArgs e)
         {
             Auxiliary.DeleteTempFiles(this.tempDir);
-            Close();
         }
     }
 }

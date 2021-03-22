@@ -61,7 +61,6 @@ namespace deidentify_gui
                 }
             };
 
-            label.Content = "Status:";
             proc.Start();
             string line = "";
             while (!proc.StandardError.EndOfStream)
