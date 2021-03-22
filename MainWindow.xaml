@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:deidentify_gui"
         mc:Ignorable="d"
-        Title="Deidentify" Height="720" Width="1020"> <!-- h:690 -->
+        Title="Deidentify" Height="720" Width="1020"
+        Closing="Window_Closing">
 
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled">
         <Grid Name="DeidentifyGrid" FocusManager.FocusedElement="{Binding ElementName=Button_Close}">

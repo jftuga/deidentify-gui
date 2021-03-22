@@ -154,5 +154,11 @@ namespace deidentify_gui
         {
             MessageBox.Show("The SAVE function has not been implemented yet." + "\n" + "Instead, use COPY to copy the deidentifed text to the clipboard.", "Deidentify");
         }
+
+        private void Window_Closing(object sender, EventArgs e)
+        {
+            Auxiliary.DeleteTempFiles(this.tempDir);
+            Close();
+        }
     }
 }
