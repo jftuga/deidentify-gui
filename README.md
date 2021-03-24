@@ -4,6 +4,10 @@ An easy to use GUI for the [deidentify](https://github.com/jftuga/deidentify) co
 ## Screenshot
 ![Screenshot](screenshot.png)
 
+* If you see any `possible misses` in the `Status` bar, you will need to:
+* * Click `Debug` which will open the log file in your web browser
+* * Scroll to the bottom and review the `possible_misses` section
+
 ## Deployment
 1) First, install the [deidentify](https://github.com/jftuga/deidentify) command-line program
 * * Make sure you can successfully run this Python script from the command-line and get good results
