@@ -5,7 +5,7 @@ An easy to use GUI for the [deidentify](https://github.com/jftuga/deidentify) co
 ![Screenshot](screenshot.png)
 
 ## Deployment
-1) First, install [deidentify](https://github.com/jftuga/deidentify)
+1) First, install the [deidentify](https://github.com/jftuga/deidentify) command-line program
 * * Make sure you can successfully run this Python script from the command-line and get good results
 * * Since `Python 3.9.x` was used to create the [Python Virtual Enviornment](https://docs.python.org/3/tutorial/venv.html), you, therefore, might want to use this version.
 2) Unzip a [deidentify-gui release](https://github.com/jftuga/deidentify-gui/releases) such that these file reside in the same directory as the `deidentify` Python scripts
