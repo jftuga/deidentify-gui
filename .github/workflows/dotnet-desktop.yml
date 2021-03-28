@@ -23,3 +23,5 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
+    - uses: pwsh
+      run: Get-ReleaseVersion.ps1
