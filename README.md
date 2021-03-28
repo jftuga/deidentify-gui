@@ -1,5 +1,5 @@
 # deidentify-gui
-An easy to use GUI for the [deidentify](https://github.com/jftuga/deidentify) command-line program
+An easy to use GUI for the [deidentify](https://github.com/jftuga/deidentify) command-line program, which is used to substitute a person's given name and/or surname along with any gender specific pronouns. 
 
 ## Screenshot
 ![Screenshot](screenshot.png)
