@@ -1,0 +1,68 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-2019
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Restore solution
+      run: dotnet restore
+    - name: Build solution
+      run: dotnet publish --configuration Release --no-restore
+      
+    - name: Get VERSION
+      run: Write-Output VERSION="$(([Xml] (Get-Content .\deidentify-gui.csproj)).Project.PropertyGroup.Version)" >> $env:GITHUB_ENV
+    - name: Persist VERSION
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: nick-invision/persist-action-data@v1
+      with:
+        data: ${{ env.VERSION }}
+        variable: VERSION
+
+    - name: Upload build output to artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: deidentify-gui-${{ env.VERSION }}-x86_64-pc-windows
+        path: bin/Release/netcoreapp3.1/publish/*
+
+  release:
+    needs: build
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Get VERSION 
+      uses: nick-invision/persist-action-data@v1
+      with:
+        retrieve_variables: VERSION
+    - name: Get build output artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: deidentify-gui-${{ env.VERSION }}-x86_64-pc-windows
+        path: deidentify-gui-${{ env.VERSION }}-x86_64-pc-windows
+    - name: Remove VERSION from artifacts
+      uses: geekyeggo/delete-artifact@v1
+      with:
+        name: VERSION
+    
+    - name: Compress build to zip
+      run: 7z a deidentify-gui-${{ env.VERSION }}-x86_64-pc-windows.zip ./deidentify-gui-${{ env.VERSION }}-x86_64-pc-windows/*
+
+    - uses: softprops/action-gh-release@v1
+      with:
+        files: deidentify-gui-${{ env.VERSION }}-x86_64-pc-windows.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
